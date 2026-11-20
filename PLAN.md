@@ -42,7 +42,7 @@ The IT team has one reviewed, current source of truth for Mountaincraft Makerspa
 
 ### P1: Repo and hosting (blocked: no access to the org GitHub yet)
 
-- [ ] Get access to the org GitHub; create `it-docs` repo; push
+- [ ] Get access to the org GitHub; transfer `bgmakesithappen/mountaincraft-it-docs` (currently public) into the org as a **private** repo before any real IT content is added
 - [ ] Create teams `it-team` and `it-leads`; fill in `CODEOWNERS`
 - [ ] Branch protection on `main`: PR required, 1 approval, code-owner review, build check required
 - [ ] Pin GitHub Actions to commit SHAs
@@ -90,3 +90,4 @@ Decide when a second team asks. Keep the schema and `PageTitle` component free o
 
 - 2026-11-19: Plan created with the P0 wireframe.
 - 2026-11-20: Named for Mountaincraft Makerspace.
+- 2026-11-20: Pushed to `bgmakesithappen/mountaincraft-it-docs`, public for preview while content is placeholder only.
