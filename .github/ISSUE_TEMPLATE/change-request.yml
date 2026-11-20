@@ -1,0 +1,35 @@
+# Same fields as the Slack /wiki-change form, so both paths produce identical issues.
+name: Change request
+description: Ask for a change to the IT docs.
+labels: ["change-request"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Link or title of the page. Leave blank for a new page.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong or missing
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What it should say
+    validations:
+      required: true
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      options:
+        - Normal
+        - Soon (this week)
+        - Urgent (service down or instructions are wrong/unsafe)
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "Do not paste passwords, keys or codes. Name the password-manager item instead."

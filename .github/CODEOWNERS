@@ -1,0 +1,8 @@
+# TODO(PLAN P1): replace placeholders with real org teams once the GitHub org is set up.
+# Last matching rule wins.
+*                              @<org>/it-team
+/src/content/docs/policies/    @<org>/it-leads
+/src/content/docs/decisions/   @<org>/it-leads
+/.github/                      @<org>/it-leads
+/astro.config.mjs              @<org>/it-leads
+/src/content.config.ts         @<org>/it-leads

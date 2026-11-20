@@ -1,0 +1,27 @@
+---
+title: Mountaincraft IT Docs
+description: How Mountaincraft Makerspace's IT runs, and how to change it.
+template: splash
+hero:
+  tagline: Services, network, runbooks and policies maintained by the IT team.
+  actions:
+    - text: Start here
+      link: /start-here/
+      icon: right-arrow
+    - text: Request a change
+      link: /start-here/contributing/
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+	<LinkCard title="Services" href="/services/" description="What we run, who owns it, and its current status." />
+	<LinkCard title="Runbooks" href="/runbooks/" description="Step-by-step procedures for common tasks and outages." />
+	<LinkCard title="Network" href="/network/" description="ISP, topology, VLANs and Wi-Fi." />
+	<LinkCard title="Policies" href="/policies/" description="Acceptable use, access and data rules." />
+</CardGrid>
+
+<Card title="Something wrong on a page?" icon="pencil">
+	Run `/wiki-change` in the IT Slack channel. Every change is reviewed before it goes live.
+</Card>
