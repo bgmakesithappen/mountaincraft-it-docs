@@ -9,7 +9,7 @@ Documentation for the Mountaincraft Makerspace IT team, built with [Starlight](h
 You need Git and Node.js 22.23 or newer (`.nvmrc` pins 24). Check with `node -v`.
 
 ```sh
-git clone <repo-url> mountaincraft-it-docs
+git clone https://github.com/bgmakesithappen/mountaincraft-it-docs.git
 cd mountaincraft-it-docs
 npm ci
 npm run dev
