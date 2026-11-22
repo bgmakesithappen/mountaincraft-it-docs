@@ -1,0 +1,20 @@
+/* Page metadata strip (layouts/_partials/page-meta.html) */
+.page-meta {
+  --pm-border: #d4d4d8; --pm-label: #71717a; --pm-accent: #2f6f4f; --pm-alert: #b91c1c; --pm-warn: #b45309;
+  margin: 0 0 1.5rem; padding: 0.75rem 1rem;
+  border: 1px solid var(--pm-border); border-radius: 0.5rem; font-size: 0.875rem;
+}
+html.dark .page-meta {
+  --pm-border: #3f3f46; --pm-label: #a1a1aa; --pm-accent: #7cc4a0; --pm-alert: #f87171; --pm-warn: #fbbf24;
+}
+.page-meta--alert { border-color: var(--pm-alert); }
+.page-meta__kind {
+  text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.75rem; color: var(--pm-accent);
+}
+.page-meta dl {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem 1rem; margin: 0.5rem 0 0;
+}
+.page-meta dt { color: var(--pm-label); font-size: 0.75rem; }
+.page-meta dd { margin: 0; overflow-wrap: anywhere; }
+.page-meta__overdue { margin: 0.5rem 0 0; color: var(--pm-warn); }

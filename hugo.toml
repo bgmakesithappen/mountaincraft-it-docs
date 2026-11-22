@@ -1,0 +1,61 @@
+# TODO(PLAN P1): set baseURL once the domain is decided, e.g. https://it-docs.mountaincraft.org/
+baseURL = "http://localhost:1313/"
+title = "Mountaincraft IT Docs"
+locale = "en-US"
+theme = "hextra"            # vendored in themes/hextra (see VENDORED.md)
+enableGitInfo = true        # "Last updated" from git history
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
+
+[markup.goldmark.renderer]
+  unsafe = false             # raw HTML in Markdown is dropped
+
+[markup.highlight]
+  noClasses = false
+
+[params]
+  description = "Services, network, runbooks and policies maintained by the Mountaincraft Makerspace IT team."
+  displayUpdatedDate = true
+  dateFormat = "2006-01-02"
+  reviewOverdueDays = 180    # used by layouts/_partials/page-meta.html
+
+  [params.navbar]
+    displayTitle = true
+    displayLogo = false
+
+  [params.footer]
+    displayCopyright = false
+    displayPoweredBy = false
+
+  [params.theme]
+    default = "system"
+    displayToggle = true
+
+  [params.page]
+    width = "normal"
+    [params.page.contextMenu]
+      enable = false         # no "open in ChatGPT" links on internal docs
+
+  # TODO(PLAN P1): enable once the repo is in the org GitHub.
+  [params.editURL]
+    enable = false
+    base = "https://github.com/<org>/it-docs/edit/main/content"
+
+  # Search runs on a local copy of FlexSearch (assets/lib), so builds need no network.
+  [params.search]
+    enable = true
+    type = "flexsearch"
+    [params.search.flexsearch]
+      index = "content"
+      js = "lib/flexsearch.bundle.min.js"
+
+[[menu.main]]
+  name = "Search"
+  weight = 1
+  [menu.main.params]
+    type = "search"
+
+[[menu.main]]
+  name = "Request a change"
+  pageRef = "/start-here/contributing"
+  weight = 2

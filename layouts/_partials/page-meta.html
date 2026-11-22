@@ -1,0 +1,84 @@
+{{- /*
+  Validates a page's frontmatter against data/pagekinds.yaml (build fails on error),
+  then renders the metadata strip under the title.
+*/ -}}
+{{- $p := .Params -}}
+{{- $path := .RelPermalink -}}{{- with .File -}}{{- $path = .Path -}}{{- end -}}
+{{- with $p.kind -}}
+  {{- $kind := . -}}
+  {{- $spec := index hugo.Data.pagekinds $kind -}}
+  {{- if not $spec -}}
+    {{- $kinds := slice -}}{{- range $k, $_ := hugo.Data.pagekinds -}}{{- $kinds = $kinds | append $k -}}{{- end -}}
+    {{- errorf "%s: unknown kind %q (allowed: %s)" $path $kind (delimit $kinds ", ") -}}
+  {{- end -}}
+  {{- range $spec.required -}}
+    {{- $v := index $p . -}}
+    {{- if or (not (isset $p .)) (eq (printf "%v" $v) "") (and (reflect.IsSlice $v) (eq (len $v) 0)) -}}
+      {{- errorf "%s: kind %q requires frontmatter field %q" $path $kind . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $field, $allowed := $spec.enums -}}
+    {{- with index $p $field -}}
+      {{- if not (in $allowed .) -}}
+        {{- errorf "%s: %s %q is not one of: %s" $path $field . (delimit $allowed ", ") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $spec.dates -}}
+    {{- $field := . -}}
+    {{- with index $p $field -}}
+      {{- with try (time.AsTime .) -}}
+        {{- with .Err -}}
+          {{- errorf "%s: %s must be a date (YYYY-MM-DD)" $path $field -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $field, $min := $spec.lists -}}
+    {{- if isset $p $field -}}
+      {{- $v := index $p $field -}}
+      {{- if not (reflect.IsSlice $v) -}}
+        {{- errorf "%s: %s must be a list" $path $field -}}
+      {{- else if lt (len $v) $min -}}
+        {{- errorf "%s: %s needs at least %d item(s)" $path $field $min -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- /* Metadata strip */ -}}
+  {{- $fmt := "2006-01-02" -}}
+  {{- $date := dict -}}
+  {{- range $spec.dates -}}
+    {{- $field := . -}}
+    {{- with index $p $field -}}{{- $date = merge $date (dict $field (time.AsTime . | time.Format $fmt)) -}}{{- end -}}
+  {{- end -}}
+  {{- $rows := slice -}}
+  {{- if eq $kind "service" -}}
+    {{- $rows = slice (slice "Status" $p.status) (slice "Criticality" $p.criticality) (slice "Owner" $p.owner) (slice "Hosted on" $p.hosted_on) (slice "Admin access" $p.admin_access) (slice "Credentials" (delimit ($p.credentials | default slice) ", ")) (slice "Last reviewed" (index $date "last_reviewed")) -}}
+  {{- else if eq $kind "runbook" -}}
+    {{- $rows = slice (slice "Risk" $p.risk) (slice "Owner" $p.owner) (slice "Applies to" (delimit $p.applies_to ", ")) (slice "Last reviewed" (index $date "last_reviewed")) -}}
+  {{- else if eq $kind "policy" -}}
+    {{- $rows = slice (slice "Owner" $p.owner) (slice "Approved by" $p.approved_by) (slice "Effective" (index $date "effective")) (slice "Last reviewed" (index $date "last_reviewed")) -}}
+  {{- else if eq $kind "decision" -}}
+    {{- $rows = slice (slice "Status" $p.status) (slice "Date" (index $date "date")) (slice "Superseded by" ($p.superseded_by | default "")) -}}
+  {{- end -}}
+  {{- $overdue := false -}}
+  {{- with $p.last_reviewed -}}
+    {{- $age := now.Sub (time.AsTime .) -}}
+    {{- $overdue = gt $age.Hours (mul 24 (site.Params.reviewOverdueDays | default 180)) -}}
+  {{- end -}}
+  {{- $alert := and (eq $kind "service") (in (slice "down" "degraded") $p.status) -}}
+  <div class="page-meta{{ if $alert }} page-meta--alert{{ end }}">
+    <span class="page-meta__kind">{{ $kind }}</span>
+    <dl>
+      {{- range $rows -}}
+        {{- if ne (printf "%v" (index . 1)) "" -}}
+          <div><dt>{{ index . 0 }}</dt><dd>{{ index . 1 }}</dd></div>
+        {{- end -}}
+      {{- end -}}
+    </dl>
+    {{- if $overdue -}}
+      <p class="page-meta__overdue">Review overdue: last reviewed more than {{ site.Params.reviewOverdueDays | default 180 }} days ago.</p>
+    {{- end -}}
+  </div>
+{{- end -}}
