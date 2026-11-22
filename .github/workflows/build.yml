@@ -1,4 +1,5 @@
-# Builds on every PR; the build fails on invalid frontmatter.
+# Builds on every PR; the build fails on invalid frontmatter (data/pagekinds.yaml).
+# Hugo is a single pinned, checksum-verified binary. No npm, no Node.
 # TODO(PLAN P1): pin actions to commit SHAs; add deploy + preview jobs once hosting is decided.
 name: build
 on:
@@ -7,6 +8,9 @@ on:
     branches: [main]
 permissions:
   contents: read
+env:
+  HUGO_VERSION: 0.167.0
+  HUGO_SHA256: 4d84519b9f619e6d4c3fb45a50157abeabeb724f859c60605f44c23def6e1169
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,12 +18,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # full history for "last updated" dates
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+      - name: Install Hugo
+        run: |
+          f="hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          curl -sSLo "$f" "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/$f"
+          echo "${HUGO_SHA256}  $f" | sha256sum -c -
+          tar -xzf "$f" hugo && sudo mv hugo /usr/local/bin/
+          hugo version
+      - run: hugo --gc --minify
   secrets:
     runs-on: ubuntu-latest
     steps:

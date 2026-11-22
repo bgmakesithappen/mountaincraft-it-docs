@@ -10,11 +10,11 @@ The IT team has one reviewed, current source of truth for Mountaincraft Makerspa
 
 | Decision | Detail | Record |
 |---|---|---|
-| Static docs site, not a wiki | Starlight (Astro), Markdown in git | `decisions/0001` |
+| Static docs site, not a wiki | Hugo + Hextra, Markdown in git (switched from Starlight 2026-11-22: no npm in the build) | `decisions/0001` |
 | Every change is reviewed | Pull requests, human merge, CODEOWNERS for policies | `decisions/0001` |
 | Scope is the IT team | Org-wide site is a later option (see Phase 4) | `decisions/0001` |
 | Requests come from Slack | `/wiki-change` → GitHub issue → agent drafts PR → review → merge → Slack notice | `decisions/0001` |
-| Page kinds with checked frontmatter | service, runbook, policy, decision; the build fails on invalid fields | `src/content.config.ts` |
+| Page kinds with checked frontmatter | service, runbook, policy, decision; the build fails on invalid fields | `data/pagekinds.yaml` |
 | No secrets in the repo | Pages name password-manager items only; CI scans for secrets | `AGENTS.md`, `start-here/conventions.md` |
 
 ## Open decisions
@@ -33,12 +33,13 @@ The IT team has one reviewed, current source of truth for Mountaincraft Makerspa
 
 ### P0: Wireframe (done 2026-11-19)
 
-- [x] Starlight scaffold, section layout, sidebar
+- [x] Static site scaffold, section layout, sidebar (Starlight first, ported to Hugo + Hextra on 2026-11-22)
 - [x] Frontmatter schema per page kind; tested that invalid pages fail the build
 - [x] Metadata strip under page titles (status, owner, review date, overdue warning after 180 days)
 - [x] Page templates, change-request issue form, PR template, CODEOWNERS placeholders, CI workflow draft
 - [x] Agent rules (`AGENTS.md`)
 - [x] Example service and runbook pages (marked EXAMPLE)
+- [x] Build has no npm or Node: pinned Hugo binary, vendored theme and search library
 
 ### P1: Repo and hosting (blocked: no access to the org GitHub yet)
 
@@ -47,7 +48,7 @@ The IT team has one reviewed, current source of truth for Mountaincraft Makerspa
 - [ ] Branch protection on `main`: PR required, 1 approval, code-owner review, build check required
 - [ ] Pin GitHub Actions to commit SHAs
 - [ ] Secret scanning: gitleaks-action needs a free license key for org repos; get one or run the gitleaks binary directly
-- [ ] Settle D1–D3; set `site` and `editLink` in `astro.config.mjs`
+- [ ] Settle D1–D3; set `baseURL` and `editURL` in `hugo.toml`
 - [ ] Deploy `main`; preview deploy per PR behind the same access control
 - [ ] All accounts (GitHub org, Cloudflare, domain, Slack app) owned by the makerspace, with at least two admins; credentials in the org password manager
 
@@ -77,7 +78,7 @@ If other teams or the whole org want docs:
 - **Option A: one site, a section per team.** One repo; CODEOWNERS per folder; access per path. Easiest to search; access rules get more complex.
 - **Option B: separate site per team or org.** Copy this repo as a template; shared schema and components. Simpler access; content is split across sites.
 
-Decide when a second team asks. Keep the schema and `PageTitle` component free of IT-specific assumptions so either option works.
+Decide when a second team asks. Keep `data/pagekinds.yaml` and `page-meta.html` free of IT-specific assumptions so either option works.
 
 ## Risks
 
@@ -91,3 +92,4 @@ Decide when a second team asks. Keep the schema and `PageTitle` component free o
 - 2026-11-19: Plan created with the P0 wireframe.
 - 2026-11-20: Named for Mountaincraft Makerspace.
 - 2026-11-20: Pushed to `bgmakesithappen/mountaincraft-it-docs`, public for preview while content is placeholder only.
+- 2026-11-22: Ported from Starlight to Hugo + Hextra after an IT lead raised npm supply-chain risk. Starlight version kept on `main` until IT leads choose.

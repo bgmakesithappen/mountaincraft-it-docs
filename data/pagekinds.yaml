@@ -1,0 +1,29 @@
+# Required frontmatter per page kind. layouts/_partials/page-meta.html checks every
+# page against this file and fails the build (hugo errorf) on any violation.
+# Pages without `kind` are plain prose pages and are not checked.
+# Credentials are never values: `credentials` holds password-manager item names only.
+
+service:
+  required: [owner, status, criticality, hosted_on, admin_access, last_reviewed]
+  enums:
+    status: [planned, operational, degraded, down, retired]
+    criticality: [high, medium, low]
+  dates: [last_reviewed]
+  lists: { credentials: 0 }
+
+runbook:
+  required: [owner, applies_to, risk, last_reviewed]
+  enums:
+    risk: [low, medium, high]
+  dates: [last_reviewed]
+  lists: { applies_to: 1 }
+
+policy:
+  required: [owner, approved_by, effective, last_reviewed]
+  dates: [effective, last_reviewed]
+
+decision:
+  required: [status, date]
+  enums:
+    status: [proposed, accepted, superseded]
+  dates: [date]
